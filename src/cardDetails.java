@@ -15,6 +15,11 @@ public class cardDetails {
         cardMinimum = 0.02 * cardBalance; // 2% percent of cardBalance
     }
 
+    /* FIXME:
+       Needs to be changed to have the interest paid not affect the principal amt,
+       if $90 of the $120 is interest, then the remaining bal should be
+       $5970.00, not $5880.00
+    */
     public void payMinimum(){
         cardBalance -= cardMinimum; 
         paidAmt = principleAmt - cardBalance;
