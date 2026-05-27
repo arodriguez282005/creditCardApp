@@ -2,7 +2,7 @@
     Program Name: creditCardApp
     Program Date: 5/27/26
     Developer Names: Alejandro Rodriguez, Natalia Jackson
-    Program Version: 2.0
+    Program Version: 2.1
 */
 
 import java.awt.BorderLayout;
@@ -66,19 +66,20 @@ public class App {
             bottomPanel.add(yearsLabel);
             add(bottomPanel, BorderLayout.SOUTH);
 
+            Object chaseVisa;
             // Buttons
-            calculateButton.addActionListener(e -> runSimulation(cardDetails chaseVisa));
+            calculateButton.addActionListener(e -> runSimulation(60000,0.018,0.02));
             resetButton.addActionListener(e -> reset());
              setVisible(true);
     }
 
     // siumulation
 
-        private void runSimulation(cardDetails chaseVisa) {
+        private void runSimulation(int par, double par1, double par2) {
             model.setRows(0); // Clear existing data
             //chaseVisa.principleAmt();
-            chaseVisa
-            cardDetails card =  new cardDetails(6000,0.18,0.02);
+            //chaseVisa
+            // CardDetails card =  new cardDetails(/*6000,0.18,0.02*/);
             double extraPayment = 0.0;
             try {
                 extraPayment = Double.parseDouble(extraPaymentField.getText());
@@ -104,7 +105,7 @@ public class App {
     }
     public static void main(String[] args) throws Exception {
         cardDetails chaseVisa = new cardDetails();
-        //Window display = new Window(); if not commentted out, pop up opens
+        Window display = new Window(); //if not commentted out, pop up opens
 
         //chaseVisa.payMinimum();
         //chaseVisa.printBalance();
