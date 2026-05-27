@@ -1,5 +1,15 @@
+/*
+    Program Name: creditCardApp
+    Program Date: 5/27/26
+    Developer Names: Alejandro Rodriguez, Natalia Jackson
+    Program Version: 1.0
+*/
+
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+        cardDetails chaseVisa = new cardDetails();
+
+        chaseVisa.payMinimum();
+        chaseVisa.printBalance();
     }
 }
