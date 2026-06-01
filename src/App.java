@@ -2,7 +2,7 @@
     Program Name: creditCardApp
     Program Date: 5/27/26
     Developer Names: Alejandro Rodriguez, Natalia Jackson
-    Program Version: 2.1
+    Program Version: 3.0
 */
 
 import java.awt.BorderLayout;
@@ -21,9 +21,14 @@ import javax.swing.table.DefaultTableModel;
 public class App {
     
     public static class Window extends JFrame {
+
         private JTextField extraPaymentField;
-        private JLabel totalLabel, monthsLabel, yearsLabel;
+        private JLabel totalLabel;
+        private JLabel monthsLabel;
+        private JLabel yearsLabel;
+        private JLabel floorLabel;
         private DefaultTableModel tableModel;
+
         public Window() {
 
             // Window setup
@@ -36,7 +41,9 @@ public class App {
             // Top section
             
             JPanel  topPanel = new JPanel();
-            topPanel.add(new JLabel("Enter  Monthly Payment:"));
+
+            topPanel.add(new JLabel("Payment above minimum payment:"));
+
             extraPaymentField = new JTextField(10);
             topPanel.add(extraPaymentField);
             
@@ -44,64 +51,105 @@ public class App {
 
             JButton calculateButton = new JButton("Calculate");
             JButton resetButton = new JButton("Reset");
+
             topPanel.add(calculateButton);
             topPanel.add(resetButton);
+
             add(topPanel, BorderLayout.NORTH);
 
             // Table setup for the monthly payment
 
-            String[] columnNames = {"Month", "Payment", "Interest", "PrincipAmt", "Remaining Balance"};
+            String[] columnNames = {"Month", "Minimum Payment","Total Paid", "Interest Payment", "Principle Payment", "Remaining Balance"};
+           
             tableModel = new DefaultTableModel(columnNames, 0);
-            JTable table = new JTable(tableModel);
+              JTable table = new JTable(tableModel);
             add(new JScrollPane(table), BorderLayout.CENTER);
 
             // Bottom section to show us the  total paid, months, and years
 
             JPanel bottomPanel = new JPanel(new GridLayout(3, 1));
+
             totalLabel = new JLabel("Total Paid: $0.00");
             monthsLabel = new JLabel("Months: 0");
             yearsLabel = new JLabel("Years: 0");
+            floorLabel = new JLabel("Payment Floor is $25");
+
             bottomPanel.add(totalLabel);
             bottomPanel.add(monthsLabel);
             bottomPanel.add(yearsLabel);
+            bottomPanel.add(floorLabel);
+
             add(bottomPanel, BorderLayout.SOUTH);
 
-            Object chaseVisa;
             // Buttons
-            calculateButton.addActionListener(e -> runSimulation(60000,0.018,0.02));
+calculateButton.addActionListener(e -> runSimulation());
             resetButton.addActionListener(e -> reset());
+             
              setVisible(true);
     }
 
     // siumulation
 
-        private void runSimulation(int par, double par1, double par2) {
-            model.setRows(0); // Clear existing data
-            //chaseVisa.principleAmt();
-            //chaseVisa
-            // CardDetails card =  new cardDetails(/*6000,0.18,0.02*/);
-            double extraPayment = 0.0;
-            try {
+        private void runSimulation() {
+
+            tableModel.setRowCount(0); // Clear existing data
+                double extraPayment = 0;
+                
+            try 
+            {
                 extraPayment = Double.parseDouble(extraPaymentField.getText());
-            } catch (Exception e) {
+            } 
+            catch (Exception e)
+             {
                JOptionPane.showMessageDialog(this, "Please enter a valid number ");
                 return;
             }
-            //throw new UnsupportedOperationException("Not supported yet.");
+cardDetails card = new cardDetails();
+
+            int month = 0;
+            double totalPaid = 0;
+            
+
+             while ( card.cardBalance >= 0.01)
+            {
+                  card.payPayment(extraPayment);
+
+                double interest = card.interestPaid;
+                double principal = card.principalPaid;
+                double payment = interest + principal;
+
+                totalPaid += payment;
+                month++;
+
+                tableModel.addRow(new Object[] {
+                    month,
+                    String.format("$%.2f", payment),
+                    String.format("$%.2f", totalPaid),
+                    String.format("$%.2f", interest),
+                    String.format("$%.2f", principal),
+                    String.format("$%.2f", card.cardBalance)
+                });
+            }
+
+           totalLabel.setText(
+                    String.format("Total Paid: $%.2f", totalPaid));
+                floorLabel.setText("Payment Floor is $25");
+                monthsLabel.setText("Months: " + month);
+                yearsLabel.setText(
+                    String.format("Years: %.2f", month / 12.0));
+
         }
 
-        private void reset() {
-            model.setRows(0);
-    extraPaymentField.setText("0");
-    totalLabel.setText("Total Paid: $0.00");
-    monthsLabel.setText("Months: 0");
-    yearsLabel.setText("Years: 0.00");
-           // throw new UnsupportedOperationException("Not supported yet.");
+ private void reset() {
+
+            tableModel.setRowCount(0);
+
+            extraPaymentField.setText("");
+
+            totalLabel.setText("Total Paid: $0.00");
+            monthsLabel.setText("Months: 0");
+            yearsLabel.setText("Years: 0.00");
         }
-
-        
-
-    
     }
     public static void main(String[] args) throws Exception {
         cardDetails chaseVisa = new cardDetails();
@@ -113,7 +161,8 @@ public class App {
         int month = 0;
         Scanner scnr = new Scanner(System.in);
         temp = scnr.nextInt();
-        if(temp == 1){
+        if(temp == 1)
+        {
             for (int i = 1; i <= 12; i++)
             {
                 chaseVisa.payMinimum();
@@ -129,21 +178,13 @@ public class App {
                 month += 1;
             }
             chaseVisa.printBalance();
+            chaseVisa.printTotalPaid();
             System.out.println("Months taken: " + month);
         }
     }
-
-    private static class model {
-
-        public model() {
-        }
-
-       
-
-        public static void setRows(int i) {
-            throw new UnsupportedOperationException("Unimplemented method 'setRows'");
-        }
-    }
-    
 }
+
+    
+    
+
 
