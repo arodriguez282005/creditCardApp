@@ -11,6 +11,7 @@ public class cardDetails {
     public double minimumRate; // percent of balance needed for minimum, 2%
     public double interestPaid; // amount of $ in the minimum payment that goes to interest
     public double principalPaid; // amount og $ in the min payment that lowers the balance
+    public double flatPay; // set amount to be paid monthly
 
     public cardDetails(){
 
@@ -30,7 +31,7 @@ public class cardDetails {
 
    }
     public void payPayment(double extrapayment) {
-     cardMinimum = minimumRate * cardBalance; // 2% percent of cardBalance
+        cardMinimum = minimumRate * cardBalance; // 2% percent of cardBalance
         if (cardMinimum < 25 && cardBalance < 25)
         { 
             cardMinimum = cardBalance;
@@ -40,10 +41,11 @@ public class cardDetails {
             cardMinimum = 25;
         }
 
+        cardMinimum += extrapayment;
+
         interestPaid = interestRate * cardBalance;
         principalPaid = cardMinimum - interestPaid;
 
-        principalPaid += extrapayment;
 
          if (principalPaid > cardBalance)
           {
@@ -52,7 +54,22 @@ public class cardDetails {
 
         cardBalance -= principalPaid; 
 
-        paidAmt += cardMinimum;
+        paidAmt += principalPaid + interestPaid;
+    }
+
+    public void setPayment(double setPay){
+        flatPay = setPay;
+
+        interestPaid = interestRate * cardBalance;
+        principalPaid = flatPay - interestPaid;
+
+        if(principalPaid > cardBalance){
+            principalPaid = cardBalance;
+        }
+        
+        cardBalance -= principalPaid;
+
+        paidAmt += principalPaid + interestPaid;
     }
 
     public void printBalance()

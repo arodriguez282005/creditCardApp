@@ -2,7 +2,7 @@
     Program Name: creditCardApp
     Program Date: 5/27/26
     Developer Names: Alejandro Rodriguez, Natalia Jackson
-    Program Version: 3.0
+    Program Version: 3.1
 */
 
 import java.awt.BorderLayout;
@@ -27,7 +27,10 @@ public class App {
         private JLabel monthsLabel;
         private JLabel yearsLabel;
         private JLabel floorLabel;
+        private JLabel disclaimer;
+        private JLabel disclaimer2;
         private DefaultTableModel tableModel;
+        // label here
 
         public Window() {
 
@@ -59,8 +62,9 @@ public class App {
 
             // Table setup for the monthly payment
 
-            String[] columnNames = {"Month", "Minimum Payment","Total Paid", "Interest Payment", "Principle Payment", "Remaining Balance"};
-           
+            String[] columnNames = {"Month", "Minimum Payment","Total Paid", "Interest Payment", "Principle Payment", "Remaining Balance"
+    };
+           // lable here
             tableModel = new DefaultTableModel(columnNames, 0);
               JTable table = new JTable(tableModel);
             add(new JScrollPane(table), BorderLayout.CENTER);
@@ -73,16 +77,21 @@ public class App {
             monthsLabel = new JLabel("Months: 0");
             yearsLabel = new JLabel("Years: 0");
             floorLabel = new JLabel("Payment Floor is $25");
+            disclaimer = new JLabel("The payment is based on a percentage of the current balance, this bank is evil");
+            disclaimer2 = new JLabel("Some banks do interest only loans, we are one of those banks");
 
             bottomPanel.add(totalLabel);
             bottomPanel.add(monthsLabel);
             bottomPanel.add(yearsLabel);
             bottomPanel.add(floorLabel);
+            bottomPanel.add(disclaimer);
+            bottomPanel.add(disclaimer2);
+            // label here
 
             add(bottomPanel, BorderLayout.SOUTH);
 
             // Buttons
-calculateButton.addActionListener(e -> runSimulation());
+            calculateButton.addActionListener(e -> runSimulation());
             resetButton.addActionListener(e -> reset());
              
              setVisible(true);
@@ -104,7 +113,7 @@ calculateButton.addActionListener(e -> runSimulation());
                JOptionPane.showMessageDialog(this, "Please enter a valid number ");
                 return;
             }
-cardDetails card = new cardDetails();
+            cardDetails card = new cardDetails();
 
             int month = 0;
             double totalPaid = 0;
@@ -128,6 +137,7 @@ cardDetails card = new cardDetails();
                     String.format("$%.2f", interest),
                     String.format("$%.2f", principal),
                     String.format("$%.2f", card.cardBalance)
+                    // lable here 
                 });
             }
 
@@ -158,6 +168,7 @@ cardDetails card = new cardDetails();
         //chaseVisa.payMinimum();
         //chaseVisa.printBalance();
         int temp;
+        int temp2;
         int month = 0;
         Scanner scnr = new Scanner(System.in);
         temp = scnr.nextInt();
@@ -172,9 +183,19 @@ cardDetails card = new cardDetails();
                 System.out.println("");
             }
         }
-        else {
+        else if (temp == 2){
             while (chaseVisa.cardBalance > 0){
                 chaseVisa.payMinimum();
+                month += 1;
+            }
+            chaseVisa.printBalance();
+            chaseVisa.printTotalPaid();
+            System.out.println("Months taken: " + month);
+        }
+        else {
+            temp2 = scnr.nextInt();
+            while (chaseVisa.cardBalance > 0){
+                chaseVisa.setPayment(temp2);
                 month += 1;
             }
             chaseVisa.printBalance();
