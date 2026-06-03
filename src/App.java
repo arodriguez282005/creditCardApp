@@ -2,7 +2,7 @@
     Program Name: creditCardApp
     Program Date: 5/27/26
     Developer Names: Alejandro Rodriguez, Natalia Jackson
-    Program Version: 3.1
+    Program Version: 4.0
 */
 
 import java.awt.BorderLayout;
@@ -27,9 +27,10 @@ public class App {
         private JLabel monthsLabel;
         private JLabel yearsLabel;
         private JLabel floorLabel;
-        private JLabel disclaimer;
-        private JLabel disclaimer2;
+        private JLabel flatTotalLabel;
+        private JLabel flatYearsLabel;
         private DefaultTableModel tableModel;
+        private JTextField FlatPaymentField;
         // label here
 
         public Window() {
@@ -50,6 +51,11 @@ public class App {
             extraPaymentField = new JTextField(10);
             topPanel.add(extraPaymentField);
             
+topPanel.add(new JLabel("Flat payment is :"));
+FlatPaymentField = new JTextField(10);
+topPanel.add(FlatPaymentField);
+
+            
             // Button for calculation and reset just in case you mess up the input
 
             JButton calculateButton = new JButton("Calculate");
@@ -62,8 +68,9 @@ public class App {
 
             // Table setup for the monthly payment
 
-            String[] columnNames = {"Month", "Minimum Payment","Total Paid", "Interest Payment", "Principle Payment", "Remaining Balance"
-    };
+            String[] columnNames = {"Month", "Minimum Payment","Total Paid", "Interest Payment", "Principle Payment", "Remaining Balance",
+                                    "Flat Payment", "Flat Payment Total", "Flat Payment Balance"
+                                    };
            // lable here
             tableModel = new DefaultTableModel(columnNames, 0);
               JTable table = new JTable(tableModel);
@@ -77,15 +84,18 @@ public class App {
             monthsLabel = new JLabel("Months: 0");
             yearsLabel = new JLabel("Years: 0");
             floorLabel = new JLabel("Payment Floor is $25");
-            disclaimer = new JLabel("The payment is based on a percentage of the current balance, this bank is evil");
-            disclaimer2 = new JLabel("Some banks do interest only loans, we are one of those banks");
+            
+            flatTotalLabel = new JLabel("Flat Payment Total Paid: $0.00");
+            flatYearsLabel = new JLabel("Flat Payment Years: 0");
 
             bottomPanel.add(totalLabel);
             bottomPanel.add(monthsLabel);
             bottomPanel.add(yearsLabel);
             bottomPanel.add(floorLabel);
-            bottomPanel.add(disclaimer);
-            bottomPanel.add(disclaimer2);
+            bottomPanel.add(flatTotalLabel);
+            bottomPanel.add(flatYearsLabel);
+          
+
             // label here
 
             add(bottomPanel, BorderLayout.SOUTH);
@@ -103,7 +113,7 @@ public class App {
 
             tableModel.setRowCount(0); // Clear existing data
                 double extraPayment = 0;
-                
+                double flatPayment = 0;
             try 
             {
                 extraPayment = Double.parseDouble(extraPaymentField.getText());
@@ -113,13 +123,24 @@ public class App {
                JOptionPane.showMessageDialog(this, "Please enter a valid number ");
                 return;
             }
+             try 
+            {
+                flatPayment = Double.parseDouble(FlatPaymentField.getText());
+            } 
+            catch (Exception e)
+             {
+               JOptionPane.showMessageDialog(this, "Please enter a valid number ");
+                return;
+            }
             cardDetails card = new cardDetails();
+            cardDetails cardFlat = new cardDetails();
 
             int month = 0;
             double totalPaid = 0;
+            double flatPayTotal = 0;
             
 
-             while ( card.cardBalance >= 0.01)
+             while ( card.cardBalance >= 0.01 || cardFlat.cardBalance >= 0.01)
             {
                   card.payPayment(extraPayment);
 
@@ -127,8 +148,14 @@ public class App {
                 double principal = card.principalPaid;
                 double payment = interest + principal;
 
-                totalPaid += payment;
                 month++;
+
+                totalPaid += payment;
+
+                cardFlat.setPayment(flatPayment);
+
+                flatPayTotal += cardFlat.interestPaid + cardFlat.principalPaid;
+                double flatBal = cardFlat.cardBalance;
 
                 tableModel.addRow(new Object[] {
                     month,
@@ -136,17 +163,35 @@ public class App {
                     String.format("$%.2f", totalPaid),
                     String.format("$%.2f", interest),
                     String.format("$%.2f", principal),
-                    String.format("$%.2f", card.cardBalance)
-                    // lable here 
+                    String.format("$%.2f", card.cardBalance),
+                    String.format("$%.2f", flatPayment),
+                    String.format("$%.2f", flatPayTotal),
+                    String.format("$%.2f", flatBal)
+                    
+
+                    // label here 
                 });
             }
+            /*while (cardFlat.cardBalance >= 0.01) { 
+                
+                double flatPayment = 120;
+                cardFlat.setPayment(flatPayment);
 
-           totalLabel.setText(
-                    String.format("Total Paid: $%.2f", totalPaid));
+                flatPayTotal += cardFlat.interestPaid + cardFlat.principalPaid;
+
+                tableModel.addRow(new Object[]{
+                    String.format("$%.2f", flatPayment),
+                    String.format("$%.2f", flatPayTotal)
+                });
+            }
+                */
+
+           totalLabel.setText(String.format("Total Paid: $%.2f", totalPaid));
+                flatTotalLabel.setText(String.format("Flat Payment Total Paid: $%.2f", flatPayTotal));
                 floorLabel.setText("Payment Floor is $25");
-                monthsLabel.setText("Months: " + month);
-                yearsLabel.setText(
-                    String.format("Years: %.2f", month / 12.0));
+                monthsLabel.setText("Months: " + card.cardMonth);
+                yearsLabel.setText(String.format("Years: %.2f", card.cardMonth / 12.0));
+                flatYearsLabel.setText(String.format("Flat Payment Years: %.2f", cardFlat.flatCardMonth / 12.0));
 
         }
 
@@ -155,7 +200,7 @@ public class App {
             tableModel.setRowCount(0);
 
             extraPaymentField.setText("");
-
+                FlatPaymentField.setText("");
             totalLabel.setText("Total Paid: $0.00");
             monthsLabel.setText("Months: 0");
             yearsLabel.setText("Years: 0.00");

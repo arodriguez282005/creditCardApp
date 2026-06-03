@@ -12,6 +12,8 @@ public class cardDetails {
     public double interestPaid; // amount of $ in the minimum payment that goes to interest
     public double principalPaid; // amount og $ in the min payment that lowers the balance
     public double flatPay; // set amount to be paid monthly
+    public double cardMonth;
+    public double flatCardMonth;
 
     public cardDetails(){
 
@@ -21,6 +23,8 @@ public class cardDetails {
         APR = 0.18; // percent, annual
         interestRate = APR / 12; // percent, monthly
         minimumRate = 0.02; // percent
+        cardMonth = 0;
+        flatCardMonth = 0;
     }
 
 
@@ -55,6 +59,10 @@ public class cardDetails {
         cardBalance -= principalPaid; 
 
         paidAmt += principalPaid + interestPaid;
+        
+        if(cardBalance != 0){
+           cardMonth += 1;
+        }
     }
 
     public void setPayment(double setPay){
@@ -70,6 +78,10 @@ public class cardDetails {
         cardBalance -= principalPaid;
 
         paidAmt += principalPaid + interestPaid;
+        if(cardBalance != 0){
+            flatCardMonth += 1;
+        }
+        
     }
 
     public void printBalance()
